@@ -6,7 +6,9 @@ DOCKER_COMPOSE_POOL_DB := zkevm-pool-db
 DOCKER_COMPOSE_RPC_DB := zkevm-rpc-db
 DOCKER_COMPOSE_BRIDGE_DB := zkevm-bridge-db
 DOCKER_COMPOSE_ZKEVM_NODE := zkevm-node
+DOCKER_COMPOSE_VALIDIUM_NODE := cdk-validium-node-custom-native-token
 DOCKER_COMPOSE_L1_NETWORK := zkevm-mock-l1-network
+DOCKER_COMPOSE_L1_NETWORK_VALIDIUM := cdk-validium-mock-l1-network-custom-native-token
 DOCKER_COMPOSE_ZKPROVER := zkevm-prover
 DOCKER_COMPOSE_BRIDGE := zkevm-bridge-service
 
@@ -15,7 +17,9 @@ RUN_POOL_DB := $(DOCKER_COMPOSE) up -d $(DOCKER_COMPOSE_POOL_DB)
 RUN_BRIDGE_DB := $(DOCKER_COMPOSE) up -d $(DOCKER_COMPOSE_BRIDGE_DB)
 RUN_DBS := ${RUN_BRIDGE_DB} && ${RUN_STATE_DB} && ${RUN_POOL_DB}
 RUN_NODE := $(DOCKER_COMPOSE) up -d $(DOCKER_COMPOSE_ZKEVM_NODE)
+RUN_NODE_VALIDIUM := $(DOCKER_COMPOSE) up -d $(DOCKER_COMPOSE_VALIDIUM_NODE)
 RUN_L1_NETWORK := $(DOCKER_COMPOSE) up -d $(DOCKER_COMPOSE_L1_NETWORK)
+RUN_L1_NETWORK-VALIDIUM := $(DOCKER_COMPOSE) up -d $(DOCKER_COMPOSE_L1_NETWORK_VALIDIUM)
 RUN_ZKPROVER := $(DOCKER_COMPOSE) up -d $(DOCKER_COMPOSE_ZKPROVER)
 RUN_BRIDGE := $(DOCKER_COMPOSE) up -d $(DOCKER_COMPOSE_BRIDGE)
 
@@ -200,3 +204,14 @@ generate-mocks: ## Generates mocks for the tests, using mockery tool
 	mockery --name=bridgectrlInterface --dir=synchronizer --output=synchronizer --outpkg=synchronizer --structname=bridgectrlMock --filename=mock_bridgectrl.go
 	mockery --name=Tx --srcpkg=github.com/jackc/pgx/v4 --output=synchronizer --outpkg=synchronizer --structname=dbTxMock --filename=mock_dbtx.go
 	mockery --name=zkEVMClientInterface --dir=synchronizer --output=synchronizer --outpkg=synchronizer --structname=zkEVMClientMock --filename=mock_zkevmclient.go
+
+.PHONY: run-validium
+run-validium: stop ## runs all services
+	$(RUN_DBS)
+	$(RUN_L1_NETWORK-VALIDIUM)
+	sleep 5
+	$(RUN_ZKPROVER)
+	sleep 3
+	$(RUN_NODE_VALIDIUM)
+	sleep 7
+	$(RUN_BRIDGE)
