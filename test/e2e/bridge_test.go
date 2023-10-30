@@ -532,13 +532,7 @@ func TestE2E(t *testing.T) {
 		// Get Bridge Info By DestAddr
 		deposits, err = opsman.GetBridgeInfoByDestAddr(ctx, &destAddr)
 		require.NoError(t, err)
-		// Get the claim data
-		smtProof, globaExitRoot, err = opsman.GetClaimData(ctx, uint(deposits[0].NetworkId), uint(deposits[0].DepositCnt))
-		require.NoError(t, err)
-		// Claim a bridge message in L1
-		t.Logf("globalExitRoot: %+v", globaExitRoot)
-		err = opsman.SendL1Claim(ctx, deposits[0], smtProof, globaExitRoot)
-		require.NoError(t, err)
+		require.NoError(t, opsman.CheckL1Claim(ctx, uint(deposits[0].DepositCnt)))
 	})
 	t.Run("Bridge Message Authorized Account Test", func(t *testing.T) {
 		// Test L1 Bridge Message
@@ -575,12 +569,6 @@ func TestE2E(t *testing.T) {
 		// Get Bridge Info By DestAddr
 		deposits, err = opsman.GetBridgeInfoByDestAddr(ctx, &destAddr)
 		require.NoError(t, err)
-		// Get the claim data
-		smtProof, globaExitRoot, err := opsman.GetClaimData(ctx, uint(deposits[0].NetworkId), uint(deposits[0].DepositCnt))
-		require.NoError(t, err)
-		// Claim a bridge message in L1
-		t.Logf("globalExitRoot: %+v", globaExitRoot)
-		err = opsman.SendL1Claim(ctx, deposits[0], smtProof, globaExitRoot)
-		require.NoError(t, err)
+		require.NoError(t, opsman.CheckL1Claim(ctx, uint(deposits[0].DepositCnt)))
 	})
 }

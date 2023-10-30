@@ -179,7 +179,8 @@ func TestUpdateDepositStatus(t *testing.T) {
 	require.Equal(t, uint(1), deposits[0].DepositCount)
 	require.Equal(t, uint(0), deposits[0].NetworkID)
 
-	require.NoError(t, pg.UpdateL2DepositsStatus(ctx, l2Root, 1, nil))
+	_, err = pg.UpdateL2DepositsStatus(ctx, l2Root, 1, nil)
+	require.NoError(t, err)
 	deposits, err = pg.GetDeposits(ctx, destAdr, 10, 0, nil)
 	require.NoError(t, err)
 	require.Len(t, deposits, 2)
@@ -252,7 +253,8 @@ func TestUpdateL2DepositStatusMultipleRollups(t *testing.T) {
 	require.NoError(t, pg.SetRoot(ctx, l2Root2, depositID2, deposit2.NetworkID, nil))
 
 	// This root is for network 1, this won't upgrade anything
-	require.NoError(t, pg.UpdateL2DepositsStatus(ctx, l2Root1, 2, nil))
+	_, err = pg.UpdateL2DepositsStatus(ctx, l2Root1, 2, nil)
+	require.NoError(t, err)
 	deposits, err := pg.GetDeposits(ctx, destAdr, 10, 0, nil)
 	require.NoError(t, err)
 	require.Len(t, deposits, 2)
@@ -260,21 +262,24 @@ func TestUpdateL2DepositStatusMultipleRollups(t *testing.T) {
 	require.False(t, deposits[0].ReadyForClaim)
 
 	// This root is for network 2, this won't upgrade anything
-	require.NoError(t, pg.UpdateL2DepositsStatus(ctx, l2Root2, 1, nil))
+	_, err = pg.UpdateL2DepositsStatus(ctx, l2Root2, 1, nil)
+	require.NoError(t, err)
 	deposits, err = pg.GetDeposits(ctx, destAdr, 10, 0, nil)
 	require.NoError(t, err)
 	require.Len(t, deposits, 2)
 	require.False(t, deposits[1].ReadyForClaim)
 	require.False(t, deposits[0].ReadyForClaim)
 
-	require.NoError(t, pg.UpdateL2DepositsStatus(ctx, l2Root1, 1, nil))
+	_, err = pg.UpdateL2DepositsStatus(ctx, l2Root1, 1, nil)
+	require.NoError(t, err)
 	deposits, err = pg.GetDeposits(ctx, destAdr, 10, 0, nil)
 	require.NoError(t, err)
 	require.Len(t, deposits, 2)
 	require.True(t, deposits[1].ReadyForClaim)
 	require.False(t, deposits[0].ReadyForClaim)
 
-	require.NoError(t, pg.UpdateL2DepositsStatus(ctx, l2Root2, 2, nil))
+	_, err = pg.UpdateL2DepositsStatus(ctx, l2Root2, 2, nil)
+	require.NoError(t, err)
 	deposits, err = pg.GetDeposits(ctx, destAdr, 10, 0, nil)
 	require.NoError(t, err)
 	require.Len(t, deposits, 2)

@@ -16,6 +16,7 @@ const (
 	l2AccHexAddress    = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 	l2AccHexPrivateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
 	l2NetworkURL       = "http://localhost:8123"
+	l1NetworkURL       = "http://localhost:8545"
 	bridgeURL          = "http://localhost:8080"
 
 	mtHeight = 32
@@ -23,7 +24,7 @@ const (
 
 func main() {
 	ctx := context.Background()
-	c, err := utils.NewClient(ctx, l2NetworkURL, common.HexToAddress(l2BridgeAddr))
+	c, err := utils.NewClient(ctx, l1NetworkURL, common.HexToAddress(l2BridgeAddr))
 	if err != nil {
 		log.Fatal("Error: ", err)
 	}
@@ -34,8 +35,8 @@ func main() {
 
 	// Get Claim data
 	cfg := clientUtils.Config{
-		L1NodeURL:    l2NetworkURL,
-		L2NodeURL:    l2NetworkURL,
+		L1NodeURL:    l1NetworkURL,
+		L2NodeURL:    l1NetworkURL,
 		BridgeURL:    bridgeURL,
 		L2BridgeAddr: common.HexToAddress(l2BridgeAddr),
 	}

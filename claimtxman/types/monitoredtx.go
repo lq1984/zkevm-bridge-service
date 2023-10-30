@@ -76,6 +76,9 @@ type MonitoredTx struct {
 
 	// UpdatedAt last date time it was updated
 	UpdatedAt time.Time
+
+	// L1 = 1, L2 = 0
+	NetworkID uint
 }
 
 // Tx uses the current information to build a tx

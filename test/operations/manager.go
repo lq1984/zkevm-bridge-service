@@ -142,6 +142,20 @@ func (m *Manager) CheckL2Claim(ctx context.Context, networkID, depositCnt uint) 
 	})
 }
 
+// CheckL1Claim checks if the claim is already in the L2 network.
+func (m *Manager) CheckL1Claim(ctx context.Context, depositCnt uint) error {
+	return operations.Poll(defaultInterval, defaultDeadline, func() (bool, error) {
+		_, err := m.storage.GetClaim(ctx, depositCnt, 0, nil)
+		if err != nil {
+			if err == gerror.ErrStorageNotFound {
+				return false, nil
+			}
+			return false, err
+		}
+		return true, nil
+	})
+}
+
 // SendL1Deposit sends a deposit from l1 to l2.
 func (m *Manager) SendL1Deposit(ctx context.Context, tokenAddr common.Address, amount *big.Int,
 	destNetwork uint32, destAddr *common.Address,
