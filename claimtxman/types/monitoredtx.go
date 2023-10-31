@@ -77,7 +77,7 @@ type MonitoredTx struct {
 	// UpdatedAt last date time it was updated
 	UpdatedAt time.Time
 
-	// L1 = 1, L2 = 0
+	// L1 = 0, L2 = 1
 	NetworkID uint
 }
 
