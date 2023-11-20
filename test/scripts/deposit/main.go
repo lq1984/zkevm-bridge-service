@@ -54,6 +54,7 @@ func depositL1ToL2() {
 	log.Info("Success!")
 }
 
+//lint:ignore U1000 Ignore unused function temporarily for debugging
 func depositL2ToL1() {
 	ctx := context.Background()
 	client, err := utils.NewClient(ctx, l2NetworkURL, common.HexToAddress(l2BridgeAddr))
